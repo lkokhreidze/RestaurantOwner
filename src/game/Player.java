@@ -13,21 +13,8 @@ import lombok.Data;
 
 @Data
 public class Player {
-	private String name;
-
-	private int moneyEarned;
-
-	private int rank;
-
-	private java.util.Collection<Waiter> waiters;
-
-	private java.util.Collection<Employee> employees;
-
 	private Restaurant restaurant;
-
-	private PlayerStatistics statistics;
-
-	private MenuItem menu;
+	private String name;
 	
 	private String path;
 	
@@ -35,9 +22,9 @@ public class Player {
         System.out.print("Enter Name: ");
         name = ConsoleReader.readLine();
         System.out.println(MessageFormat.format("Hello {0} you became a new restaurant owner", name));
-        System.out.println(MessageFormat.format("Please provide absolute file path for creating statistics data (Example: C:/Stats.txt). Statistics will be available after the end of the game.", name));
+        System.out.println(MessageFormat.format("Please provide absolute file path for creating statistics data (Example: C:/temp/Stats.txt). Statistics will be available after the end of the game.", name));
         path = ConsoleReader.readLine();
-        restaurant = new Restaurant(path);
+        restaurant = new Restaurant(name,path);
 	}
 
 }

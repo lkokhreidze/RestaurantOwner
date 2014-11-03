@@ -27,6 +27,8 @@ public abstract class Employee extends Person {
 				this.expLevel = ExpLevel.HIGH;
 				this.salary = 500;
 				return true;
+				default:
+					return false;
 			}
 		}
 		return false;

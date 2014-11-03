@@ -21,11 +21,9 @@ public class Restaurant {
 
 	private int budgetAmount = 10000;
 
-	private Player player;
-
 	private int reputation = 15;
-
-	private int income;
+	
+	private String ownerName;
 
 	private String name;
 
@@ -43,7 +41,8 @@ public class Restaurant {
 
 	private java.util.List<Table> tables;
 
-	private String[] employeeNames = { "Sauron", "Voldemort", "Chuck Norris", "Silvester Stalone", "John Snow (Who knows nothing)" };
+	private String[] employeeNames = { "Sauron", "Voldemort", "Chuck Norris",
+			"Silvester Stalone", "John Snow (Who knows nothing)" };
 
 	private String[] clientNames = { "Olivia Morris", "Leslie Richardson",
 			"Lindsay Guzman", "Teresa Manning", "Lois Becker",
@@ -62,7 +61,8 @@ public class Restaurant {
 
 	private String path;
 
-	public Restaurant(String p) throws IOException {
+	public Restaurant(String name, String p) throws IOException {
+		this.ownerName = name;
 		clients = new ArrayList<Client>();
 		waiters = new ArrayList<Waiter>();
 		tables = new ArrayList<Table>();
@@ -102,7 +102,7 @@ public class Restaurant {
 							rnd.nextInt(menu.getBeverages().size() - 1))));
 			clientTwo.setBill(clientTwo.orders.get(clientTwo.orders.size() - 1)
 					.calculateIncome());
-			if (this.reputation <= 100 && this.reputation >= 0) {
+			if (this.reputation < 100 && this.reputation >= 0) {
 				this.reputation += clientOne.orders.get(
 						clientOne.orders.size() - 1).calculateSatisfactory(
 						tables.get(tableNumber).getWaiter());
@@ -144,13 +144,13 @@ public class Restaurant {
 		}
 
 		// Set price section
-		System.out.println("Enter price for low quality dish: ");
+		System.out.print("Enter price for low quality dish: ");
 		priceForLowDish = Integer.parseInt(ConsoleReader.readLine());
 		System.out.print("Enter price for high quality dish: ");
 		priceForHighDish = Integer.parseInt(ConsoleReader.readLine());
-		System.out.println("Enter price for low quality baverage: ");
+		System.out.print("Enter price for low quality baverage: ");
 		priceForLowBeverage = Integer.parseInt(ConsoleReader.readLine());
-		System.out.println("Enter price for high quality baverage: ");
+		System.out.print("Enter price for high quality baverage: ");
 		priceForHighBeverage = Integer.parseInt(ConsoleReader.readLine());
 		setDishBeveraQuality();
 		trainEmployee();
@@ -165,7 +165,7 @@ public class Restaurant {
 				System.out.print(" Enter table number [1-9]: ");
 				String input = ConsoleReader.readLine();
 				if (invalidNumericCharacter(input)) {
-					int number = Integer.parseInt(input);
+					int number = Integer.parseInt(input) - 1;
 					if (!tables.get(number).isTableAssigned()) {
 						waiter.getTables().add(tables.get(number));
 						tables.get(number).setWaiter(waiter);
@@ -175,8 +175,7 @@ public class Restaurant {
 						System.out.print("Incorrect table number!!!");
 						i--;
 					}
-				}
-				else{
+				} else {
 					System.out.print("Incorrect character!!!");
 					i--;
 				}
@@ -270,17 +269,18 @@ public class Restaurant {
 			break;
 
 		default:
-			break;
+			return;
 		}
+		trainEmployee();
 	}
 
 	public void endOfTheDay() throws IOException {
-
-		if (this.weekDay == 6) {
+		this.weekDay += 1;
+		if (this.weekDay == 7) {
 			for (Table table : tables)
 				table.setTableAssigned(false);
-			endOfTheWeek();
 			this.weekDay = 0;
+			endOfTheWeek();
 		} else {
 			for (Table table : tables) {
 				if (table.isTableOccupied()) {
@@ -288,30 +288,12 @@ public class Restaurant {
 					table.setTableOccupied(false);
 				}
 				table.setTableAssigned(false);
-
 			}
-			System.out.println(MessageFormat.format(
-					"Total budget for day {0} is {1}", this.weekDay++,
-					this.budgetAmount));
-			System.out.println(MessageFormat.format(
-					"Restaurant reputation for day {0} is {1}", this.weekDay++,
-					this.reputation));
-			for (Client client : clients) {
-				System.out.println(MessageFormat.format(
-						"{0} visited the restaurant, and spent TEST amount ",
-						client.getName()));
-			}
-			this.weekDay += 1;
+			provideGameInfo();
 			assignTable();
 		}
-		//
-		//
-
 	}
 
-	public void calculatePayment() {
-
-	}
 
 	public void paySalary() throws IOException {
 		int waiterSalaries = 0;
@@ -354,18 +336,21 @@ public class Restaurant {
 	}
 
 	public void gameOver() throws IOException {
-		PlayerStatistics stats = new PlayerStatistics(name, path, budgetAmount);
-		stats.createStatistics();
+		payAdditionalCosts();
+		provideGameInfo();
+		System.out.println("!!!===============GAME IS OVER===============!!!");
 		System.out.println("Your budget  " + this.budgetAmount);
 		System.out.println("Your reputation  " + this.reputation);
+		System.out.println("!!!===============CURRENT RANKING LIST===============!!!");
+		new PlayerStatistics(ownerName, path, budgetAmount).createStatistics();
 	}
 
-	public int payAdditionalCosts() {
-		return budgetAmount - 4000;
+	public void payAdditionalCosts() {
+		budgetAmount= budgetAmount - 4000;
 	}
 
 	public void endOfTheWeek() throws IOException {
-		if (weekCount == 1) {
+		if (weekCount == 3) {
 			this.gameOver();
 		} else {
 			this.trainEmployee();
@@ -377,15 +362,50 @@ public class Restaurant {
 		}
 	}
 
-	public void endOfTheMonth() {
 
-	}
+	public void provideGameInfo() {
+		System.out.println(MessageFormat.format(
+				"==================\n\rTotal budget for day {0} is {1}\n\r==================", this.weekDay,
+				this.budgetAmount));
+		System.out.println(MessageFormat.format(
+				"Restaurant reputation for day {0} is {1}\n\r==================", this.weekDay,
+				this.reputation));
+		for (Client client : clients) {
+			if (client.totalSpending() != 0) {
+				System.out
+						.println(MessageFormat
+								.format("{0} visited the restaurant {1} times, and spent {2} amount",
+										client.getName(),client.getOrders().size(),
+										client.totalSpending()));
+				int[] dishCount = client.getOrderedDishes();
+				int[] beverageCount = client.getOrderedBeverages();
+				for (int i = 0; i < 5; i++) {
+					if (dishCount[i] != 0)
+						System.out.println(MessageFormat.format(
+								"{0} ordered {1} {2} times",
+								client.getName(), menu.getDishes().get(i)
+										.getName(), dishCount[i]));
+					if (beverageCount[i] != 0)
+						System.out
+								.println(MessageFormat.format(
+										"{0} ordered {1} {2} times",
+										client.getName(), menu
+												.getBeverages().get(i)
+												.getName(),
+										beverageCount[i]));
 
-	public void provideStatistics() {
-
-	}
-
-	public void invalidQuality() {
+				}
+				
+				System.out
+				.println(MessageFormat
+						.format("{0} average consumed volume {1} ",
+								client.getName(),client.getAverageVolumeConsumed()));
+				System.out
+				.println(MessageFormat
+						.format("{0} average consumed calories {1} \n----------",
+								client.getName(),client.getAverageCaloriesConsumed()));
+			}
+		}
 
 	}
 

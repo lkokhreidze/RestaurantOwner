@@ -105,10 +105,6 @@ public class Order {
 		return clientSatisfaction;
 	}
 
-	public void calculateFeedback() {
-
-	}
-
 	public int calculateIncome() {
 		return this.dish.getPrice() + this.beverage.getPrice();
 	}

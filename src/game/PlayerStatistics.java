@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -31,12 +32,12 @@ public class PlayerStatistics
 	public PlayerStatistics(String name, String path, Integer b){
 		this.playerName = name;
 		this.filePath = path;
-		this.statFile = new File(filePath);
 		this.budget = b;
 	}
 	
 	public void createStatistics() throws IOException {
-		ArrayList<RankingList> playersList = new ArrayList<RankingList>();
+		this.statFile = new File(filePath);
+		ArrayList<PlayerRanking> playersList = new ArrayList<PlayerRanking>();
 		try {
 			if(statFile.exists() == false){
 				System.out.println("We had to make a new file.");
@@ -48,37 +49,35 @@ public class PlayerStatistics
 			playersList = getRankingList();
 			Collections.sort(playersList, new RankComparator());
 			int i = 0;
-			for(RankingList player : playersList) {
+			for(PlayerRanking player : playersList) {
 				i++;
 				player.Rank = i;
+				System.out.println(MessageFormat.format("{0} : {1} - {2}", player.getRank(), player.getPlayerName(),player.getBudget()));
 			}
 		} catch(IOException e) {
 			System.out.println("Error Creating Statistics");
 		}
 	}
 	
-	public ArrayList<RankingList> getRankingList() throws IOException {
+	public ArrayList<PlayerRanking> getRankingList() throws IOException {
 		Scanner read = new Scanner (statFile);
-		ArrayList<RankingList> rankingList = new ArrayList<RankingList>();
+		ArrayList<PlayerRanking> playerRanking = new ArrayList<PlayerRanking>();
 		read.useDelimiter("\\s*,\\s*");
 		while (read.hasNext()) {
-			RankingList rankLst = new RankingList();
+			PlayerRanking rankLst = new PlayerRanking();
 			rankLst.setPlayerName(read.next());
 			rankLst.setBudget(Integer.parseInt(read.next()));
-			rankingList.add(rankLst);
+			playerRanking.add(rankLst);
 		}
 		read.close();
-		return rankingList;
+		return playerRanking;
 	}
 	
-	public class RankComparator implements Comparator<RankingList> {
+	public class RankComparator implements Comparator<PlayerRanking> {
 		@Override
-		public int compare(RankingList o1, RankingList o2) {
+		public int compare(PlayerRanking o1, PlayerRanking o2) {
 			return o2.getBudget().compareTo(o1.getBudget());
 		}
 	}
 	
-	public void playerExists() {
-	
-	}
 }

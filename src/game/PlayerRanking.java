@@ -3,7 +3,7 @@ package game;
 import lombok.Data;
 
 @Data
-public class RankingList {
+public class PlayerRanking {
 	String PlayerName;
 	Integer Rank;
 	Integer Budget;

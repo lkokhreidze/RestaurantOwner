@@ -25,9 +25,6 @@ public class Waiter extends Employee {
 	}
 
 
-	public void serveClient() {
-
-	}
 	public boolean trainEmployee(int budget) {
 		if (this.expLevel != ExpLevel.HIGH && budget - this.trainW >= 0) {
 			switch (this.expLevel) {
