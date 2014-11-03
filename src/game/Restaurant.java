@@ -43,7 +43,7 @@ public class Restaurant {
 
 	private java.util.List<Table> tables;
 
-	private String[] employeeNames = { "one", "two", "three", "four", "five" };
+	private String[] employeeNames = { "Sauron", "Voldemort", "Chuck Norris", "Silvester Stalone", "John Snow (Who knows nothing)" };
 
 	private String[] clientNames = { "Olivia Morris", "Leslie Richardson",
 			"Lindsay Guzman", "Teresa Manning", "Lois Becker",

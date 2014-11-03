@@ -14,7 +14,8 @@ public class Menu {
 
 	private java.util.List<Beverage> beverages;
 	
-	private String[] dishNames = {"one","two","three","four","five"};
+	private String[] dishNames = {"Chicken","Fries","Burger","Fish","Steak"};
+	private String[] beveragehNames = {"Coke","Juice","Vana Tallinn","Lemonade","Milk"};
 	
 	public Menu(Chef chef, Barman barman){
 		dishes = new ArrayList<Dish>();
@@ -25,7 +26,7 @@ public class Menu {
 	private void createMenu(Chef chef, Barman barman){
 		for(int i=0; i<5; i++){
 			dishes.add(new Dish(dishNames[i],chef));
-			beverages.add(new Beverage(dishNames[i],barman));
+			beverages.add(new Beverage(beveragehNames[i],barman));
 		}			
 	}
 }
