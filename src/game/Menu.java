@@ -16,16 +16,16 @@ public class Menu {
 	
 	private String[] dishNames = {"one","two","three","four","five"};
 	
-	public Menu(){
+	public Menu(Chef chef, Barman barman){
 		dishes = new ArrayList<Dish>();
 		beverages = new ArrayList<Beverage>();
-		createMenu();
+		createMenu(chef, barman);
 	}
 	
-	private void createMenu(){
+	private void createMenu(Chef chef, Barman barman){
 		for(int i=0; i<5; i++){
-			dishes.add(new Dish(dishNames[i]));
-			beverages.add(new Beverage(dishNames[i]));
+			dishes.add(new Dish(dishNames[i],chef));
+			beverages.add(new Beverage(dishNames[i],barman));
 		}			
 	}
 }

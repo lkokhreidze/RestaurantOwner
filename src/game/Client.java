@@ -10,13 +10,6 @@ import java.util.ArrayList;
 
 @Data
 public class Client extends Person {
-	private int volumeConsumed;
-
-	private int calorieConsumed;
-
-	
-
-	private Restaurant restaurant;
 
 	private int bill;
 
@@ -28,13 +21,18 @@ public class Client extends Person {
 
 	private Table table;
 
-    public Client(){
+    public Client(String name){
+    	this.name = name;
         orders = new ArrayList<Order>();
     	bill = 0;
     }
 
-	public void makeOrder() {
-		
-	}
+    public int getAverageCaloriesConsumed(){
+    	return Dish.getCalories() * orders.size()/Dish.getCalories();
+    } 
+    
+    public int getAverageVolumeConsumed(){
+    	return Beverage.getVolume() * orders.size()/Beverage.getVolume();
+    } 
 
 }

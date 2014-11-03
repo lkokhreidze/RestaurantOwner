@@ -10,7 +10,7 @@ import lombok.Data;
 public abstract class Employee extends Person {
 	protected static int trainCB = 1200;	//barman and chef training cost
 	protected static int trainW = 800;	   //waiter training cost
-	protected int salary;
+	protected int salary = 300;
 
 	protected ExpLevel expLevel = ExpLevel.LOW;
 
@@ -21,9 +21,11 @@ public abstract class Employee extends Person {
 			switch (this.expLevel) {
 			case LOW:
 				this.expLevel = ExpLevel.MEDIUM;
+				this.salary = 400;
 				return true;
 			case MEDIUM:
-				this.expLevel = ExpLevel.MEDIUM;
+				this.expLevel = ExpLevel.HIGH;
+				this.salary = 500;
 				return true;
 			}
 		}

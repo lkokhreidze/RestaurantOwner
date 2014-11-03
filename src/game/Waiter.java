@@ -21,6 +21,7 @@ public class Waiter extends Employee {
 		this.name = name;
 		tables = new ArrayList<Table>();
 		order = new ArrayList<Order>(); 
+		this.salary = 200;
 	}
 
 
@@ -32,9 +33,11 @@ public class Waiter extends Employee {
 			switch (this.expLevel) {
 			case LOW:
 				this.expLevel = ExpLevel.MEDIUM;
+				this.salary = 300;
 				return true;
 			case MEDIUM:
-				this.expLevel = ExpLevel.MEDIUM;
+				this.expLevel = ExpLevel.HIGH;
+				this.salary = 400;
 				return true;
 			}
 		}

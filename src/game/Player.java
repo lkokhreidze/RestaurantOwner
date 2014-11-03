@@ -28,13 +28,16 @@ public class Player {
 	private PlayerStatistics statistics;
 
 	private MenuItem menu;
-
+	
+	private String path;
+	
 	public void enterName() throws IOException  {
         System.out.print("Enter Name: ");
         name = ConsoleReader.readLine();
         System.out.println(MessageFormat.format("Hello {0} you became a new restaurant owner", name));
-        
-        restaurant = new Restaurant();
+        System.out.println(MessageFormat.format("Please provide absolute file path for creating statistics data (Example: C:/Stats.txt). Statistics will be available after the end of the game.", name));
+        path = ConsoleReader.readLine();
+        restaurant = new Restaurant(path);
 	}
 
 }

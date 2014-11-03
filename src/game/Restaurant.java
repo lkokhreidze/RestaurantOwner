@@ -14,6 +14,7 @@ import lombok.Data;
 @Data
 public class Restaurant {
 	private short weekDay = 0;
+	private short weekCount = 0;
 	private boolean trainingResult;
 
 	private java.util.List<Client> clients;
@@ -40,10 +41,16 @@ public class Restaurant {
 
 	private Chef chef;
 
-	private java.util.List<Order> order;
 	private java.util.List<Table> tables;
 
 	private String[] employeeNames = { "one", "two", "three", "four", "five" };
+
+	private String[] clientNames = { "Olivia Morris", "Leslie Richardson",
+			"Lindsay Guzman", "Teresa Manning", "Lois Becker",
+			"Ethel Fitzgerald", "Lonnie Warren", "Hattie Massey",
+			"Ken Mcdaniel", "Jessie Bryant", "Israel Brock", "Mary Thompson",
+			"Duane Jefferson", "Alexis Abbott", "Emily Graham", "Julia Marsh",
+			"Amanda Stokes", "Jody Simon" };
 
 	private int priceForLowDish;
 
@@ -53,84 +60,87 @@ public class Restaurant {
 
 	private int priceForHighBeverage;
 
-	public Restaurant() throws IOException {
+	private String path;
+
+	public Restaurant(String p) throws IOException {
 		clients = new ArrayList<Client>();
 		waiters = new ArrayList<Waiter>();
 		tables = new ArrayList<Table>();
-		menu = new Menu();
+		chef = new Chef(employeeNames[3]);
+		barman = new Barman(employeeNames[4]);
+		menu = new Menu(chef, barman);
+		this.path = p;
 		this.startGame();
 	}
 
-	public boolean isSufficientBudget() {
-		return budgetAmount >= 0;
+	public void isSufficientBudget() throws IOException {
+		if (budgetAmount <= 0) {
+			this.gameOver();
+		}
 	}
 
-    private void chooseClientsAndMakeOrder(int tableNumber){
-        Random rnd = new Random();
-        Client clientOne;
-        Client clientTwo;
-        clientOne = clients.get(rnd.nextInt(clients.size()-1));
-        clientTwo = clients.get(rnd.nextInt(clients.size()-1));
-        if (!tables.get(tableNumber).isTableOccupied()) {
-            clientOne = clients.get(rnd.nextInt(clients.size()-1));
-            clientTwo = clients.get(rnd.nextInt(clients.size()-1));
-            // Client one order
-            clientOne.orders.add(new Order(menu.getDishes().get(
-                    rnd.nextInt(menu.getDishes().size()-1)),menu.getBeverages().get(
-                    rnd.nextInt(menu.getBeverages().size()-1))));
-            clientOne.setBill(clientOne.orders.get(clientOne.orders.size()-1).calculateIncome());
-            // Client two order
-            clientTwo.orders.add(new Order(menu.getDishes().get(
-                    rnd.nextInt(menu.getDishes().size()-1)),menu.getBeverages().get(
-                    rnd.nextInt(menu.getBeverages().size()-1))));
-            clientTwo.setBill(clientOne.orders.get(clientOne.orders.size()-1).calculateIncome());
-            
-            this.reputation += clientOne.orders.get(clientOne.orders.size()-1).calculateSatisfactory(tables.get(tableNumber).getWaiter());
-            this.reputation += clientTwo.orders.get(clientOne.orders.size()-1).calculateSatisfactory(tables.get(tableNumber).getWaiter());
-            tables.get(tableNumber).setIncome(
-                    clientOne.getBill() + clientTwo.getBill());
-            tables.get(tableNumber).setTableOccupied(true);
-        }
-    }
-	public void occupyTables() {
-		if (this.reputation >= 30) for (int i = 0; i < 5; i++) chooseClientsAndMakeOrder(i);
-        else if (this.reputation >= 15) for (int i = 0; i < 5; i++) chooseClientsAndMakeOrder(i);
-        else for (int i = 0; i < 2; i++) chooseClientsAndMakeOrder(i);
+	private void chooseClientsAndMakeOrder(int tableNumber) {
+		Random rnd = new Random();
+		Client clientOne;
+		Client clientTwo;
+		clientOne = clients.get(rnd.nextInt(clients.size() - 1));
+		clientTwo = clients.get(rnd.nextInt(clients.size() - 1));
+		if (!tables.get(tableNumber).isTableOccupied()) {
+			clientOne = clients.get(rnd.nextInt(clients.size() - 1));
+			clientTwo = clients.get(rnd.nextInt(clients.size() - 1));
+			// Client one order
+			clientOne.orders.add(new Order(menu.getDishes().get(
+					rnd.nextInt(menu.getDishes().size() - 1)), menu
+					.getBeverages().get(
+							rnd.nextInt(menu.getBeverages().size() - 1))));
+			clientOne.setBill(clientOne.orders.get(clientOne.orders.size() - 1)
+					.calculateIncome());
+			// Client two order
+			clientTwo.orders.add(new Order(menu.getDishes().get(
+					rnd.nextInt(menu.getDishes().size() - 1)), menu
+					.getBeverages().get(
+							rnd.nextInt(menu.getBeverages().size() - 1))));
+			clientTwo.setBill(clientTwo.orders.get(clientTwo.orders.size() - 1)
+					.calculateIncome());
+			if (this.reputation <= 100 && this.reputation >= 0) {
+				this.reputation += clientOne.orders.get(
+						clientOne.orders.size() - 1).calculateSatisfactory(
+						tables.get(tableNumber).getWaiter());
+				this.reputation += clientTwo.orders.get(
+						clientTwo.orders.size() - 1).calculateSatisfactory(
+						tables.get(tableNumber).getWaiter());
+			} else {
+				this.reputation = this.reputation < 0 ? 0 : 100;
+			}
+			tables.get(tableNumber).setIncome(
+					clientOne.getBill() + clientTwo.getBill());
+			tables.get(tableNumber).setTableOccupied(true);
+		}
+	}
+
+	public void occupyTables() throws IOException {
+		if (this.reputation >= 30)
+			for (int i = 0; i < 9; i++)
+				chooseClientsAndMakeOrder(i);
+		else if (this.reputation >= 15)
+			for (int i = 0; i < 5; i++)
+				chooseClientsAndMakeOrder(i);
+		else
+			for (int i = 0; i < 2; i++)
+				chooseClientsAndMakeOrder(i);
 		endOfTheDay();
 	}
 
 	private void startGame() throws IOException {
 		for (int i = 0; i < 18; i++) {
-			clients.add(new Client());
+			clients.add(new Client(clientNames[i]));
 		}
 		for (int i = 0; i < 3; i++) {
 			waiters.add(new Waiter(employeeNames[i]));
 		}
 
-		chef = new Chef(employeeNames[3]);
-		barman = new Barman(employeeNames[4]);
 		for (int i = 0; i < 9; i++) {
 			tables.add(new Table(i));
-		}
-
-		// Assign table section
-		for (Waiter waiter : waiters) {
-			System.out.println("Assign table to waiter " + waiter.name);
-			for (int i = 0; i < 3; i++) {
-				System.out.print(" Enter table number [1-9]: ");
-				int number = Integer.parseInt(ConsoleReader.readLine()) - 1;
-				if (!tables.get(number).isTableAssigned() && number <= 9
-						&& number >= 0) {
-					waiter.getTables().add(tables.get(number));
-					tables.get(number).setWaiter(waiter);
-					tables.get(number).setTableAssigned(true);
-					System.out.print("Table was successfully assigned.");
-				} else {
-					System.out.print("Incorrect table number!!!");
-					i--;
-				}
-				System.out.println();
-			}
 		}
 
 		// Set price section
@@ -142,22 +152,44 @@ public class Restaurant {
 		priceForLowBeverage = Integer.parseInt(ConsoleReader.readLine());
 		System.out.println("Enter price for high quality baverage: ");
 		priceForHighBeverage = Integer.parseInt(ConsoleReader.readLine());
-
-		// Training section
-		System.out
-				.print("Would you like to set Dish and Baverage Quality?[Y/N]: ");
-		if (ConsoleReader.readLine().toUpperCase().equals("Y")) {
-			setDishBeveraQuality(true);
-		} else {
-			setDishBeveraQuality(false);
-			System.out.print("Would you like to train Employee? [W|C|B|N]: ");
-			trainEmployee(ConsoleReader.readLine());
-
-		}
+		setDishBeveraQuality();
+		trainEmployee();
+		this.assignTable();
 
 	}
 
-	public void setDishBeveraQuality(boolean set) throws IOException {
+	private void assignTable() throws IOException {
+		for (Waiter waiter : waiters) {
+			System.out.println("Assign table to waiter " + waiter.name);
+			for (int i = 0; i < 3; i++) {
+				System.out.print(" Enter table number [1-9]: ");
+				String input = ConsoleReader.readLine();
+				if (invalidNumericCharacter(input)) {
+					int number = Integer.parseInt(input);
+					if (!tables.get(number).isTableAssigned()) {
+						waiter.getTables().add(tables.get(number));
+						tables.get(number).setWaiter(waiter);
+						tables.get(number).setTableAssigned(true);
+						System.out.print("Table was successfully assigned.");
+					} else {
+						System.out.print("Incorrect table number!!!");
+						i--;
+					}
+				}
+				else{
+					System.out.print("Incorrect character!!!");
+					i--;
+				}
+				System.out.println();
+			}
+		}
+		this.occupyTables();
+	}
+
+	public void setDishBeveraQuality() throws IOException {
+		System.out
+				.print("Would you like to set Dish and Baverage Quality?[Y/N]: ");
+		boolean set = ConsoleReader.readLine().toUpperCase().equals("Y");
 		if (set) {
 			for (Dish dish : menu.getDishes()) {
 				System.out.print("Set dish Quality [Low - High]: ");
@@ -187,7 +219,9 @@ public class Restaurant {
 		}
 	}
 
-	public void trainEmployee(String employee) throws IOException {
+	public void trainEmployee() throws IOException {
+		System.out.print("Which Employee to train? [W|C|B|N]: ");
+		String employee = ConsoleReader.readLine();
 		switch (employee.toUpperCase()) {
 		case "W":
 			for (Waiter waiter : waiters) {
@@ -203,6 +237,10 @@ public class Restaurant {
 										.format("Waiter {0} was trained, Experience Level = {1}",
 												waiter.getName(),
 												waiter.getExpLevel()));
+					else {
+						System.out.println("Insufficient budget");
+						isSufficientBudget();
+					}
 				}
 			}
 			break;
@@ -213,6 +251,10 @@ public class Restaurant {
 				System.out.println(MessageFormat.format(
 						"Chef {0} was trained, Experience Level = {1}",
 						chef.getName(), chef.getExpLevel()));
+			else {
+				System.out.println("Insufficient budget");
+				isSufficientBudget();
+			}
 			break;
 		case "B":
 			trainingResult = barman.trainEmployee(budgetAmount);
@@ -221,83 +263,118 @@ public class Restaurant {
 				System.out.println(MessageFormat.format(
 						"Barmen {0} was trained, Experience Level = {1}",
 						barman.getName(), barman.getExpLevel()));
+			else {
+				System.out.println("Insufficient budget");
+				isSufficientBudget();
+			}
 			break;
 
 		default:
 			break;
 		}
-		this.occupyTables();
 	}
 
-	public void endOfTheDay() {
-		
-		if(weekDay==7){
-			System.out.println("End of the week " + this.budgetAmount);
-			System.out.println("Reputation" + this.reputation);
-		}			
-		else{
-			for(Table table: tables){
-				if(table.isTableOccupied())
-                   this.budgetAmount+=table.getIncome();
+	public void endOfTheDay() throws IOException {
+
+		if (this.weekDay == 6) {
+			for (Table table : tables)
+				table.setTableAssigned(false);
+			endOfTheWeek();
+			this.weekDay = 0;
+		} else {
+			for (Table table : tables) {
+				if (table.isTableOccupied()) {
+					this.budgetAmount += table.getIncome();
+					table.setTableOccupied(false);
+				}
+				table.setTableAssigned(false);
+
+			}
+			System.out.println(MessageFormat.format(
+					"Total budget for day {0} is {1}", this.weekDay++,
+					this.budgetAmount));
+			System.out.println(MessageFormat.format(
+					"Restaurant reputation for day {0} is {1}", this.weekDay++,
+					this.reputation));
+			for (Client client : clients) {
+				System.out.println(MessageFormat.format(
+						"{0} visited the restaurant, and spent TEST amount ",
+						client.getName()));
 			}
 			this.weekDay += 1;
-            occupyTables();
+			assignTable();
 		}
-//		
-//				
-		
+		//
+		//
+
 	}
 
 	public void calculatePayment() {
 
 	}
 
-	public int paySalary() {
+	public void paySalary() throws IOException {
 		int waiterSalaries = 0;
-		for(Waiter waiter : waiters) {
+		for (Waiter waiter : waiters) {
 			waiterSalaries += waiter.getSalary();
 		}
 		int totalToPay = waiterSalaries + barman.getSalary() + chef.getSalary();
-		return budgetAmount - totalToPay;
+		budgetAmount -= totalToPay;
+		isSufficientBudget();
 	}
 
-	public int paySuppliers() {
+	public void paySuppliers() throws IOException {
 		int lowQualityDishCounter = 0;
 		int highQualityDishCounter = 0;
-		for(Dish dish : menu.getDishes()) {
-			if(dish.getQuality() == ItemQuality.LOW) {
+		for (Dish dish : menu.getDishes()) {
+			if (dish.getQuality() == ItemQuality.LOW) {
 				lowQualityDishCounter++;
 			} else {
 				highQualityDishCounter++;
 			}
 		}
-		int dishSuppliersPrice = (lowQualityDishCounter * 3) + (highQualityDishCounter * 10);
-		
+		int dishSuppliersPrice = (lowQualityDishCounter * 3)
+				+ (highQualityDishCounter * 10);
+
 		int lowQualityBeverageCounter = 0;
 		int highQualityBeverageCounter = 0;
-		
-		for(Beverage beverage : menu.getBeverages()){
-			if(beverage.getQuality() == ItemQuality.LOW) {
+
+		for (Beverage beverage : menu.getBeverages()) {
+			if (beverage.getQuality() == ItemQuality.LOW) {
 				lowQualityBeverageCounter++;
 			} else {
 				highQualityBeverageCounter++;
 			}
 		}
-		int beverageSuppliersPrice = (lowQualityBeverageCounter * 3) + (highQualityBeverageCounter * 1);
-		
-		return budgetAmount - (dishSuppliersPrice + beverageSuppliersPrice);
+		int beverageSuppliersPrice = (lowQualityBeverageCounter)
+				+ (highQualityBeverageCounter * 3);
+
+		this.budgetAmount -= (dishSuppliersPrice + beverageSuppliersPrice);
+		isSufficientBudget();
 	}
 
-	public void gameOver() {
-
+	public void gameOver() throws IOException {
+		PlayerStatistics stats = new PlayerStatistics(name, path, budgetAmount);
+		stats.createStatistics();
+		System.out.println("Your budget  " + this.budgetAmount);
+		System.out.println("Your reputation  " + this.reputation);
 	}
 
 	public int payAdditionalCosts() {
 		return budgetAmount - 4000;
 	}
 
-	public boolean endOfTheWeek() {
-		return this.weekDay == 6;
+	public void endOfTheWeek() throws IOException {
+		if (weekCount == 1) {
+			this.gameOver();
+		} else {
+			this.trainEmployee();
+			this.paySuppliers();
+			this.paySalary();
+			this.weekDay = 0;
+			this.weekCount += 1;
+			assignTable();
+		}
 	}
 
 	public void endOfTheMonth() {
@@ -312,8 +389,15 @@ public class Restaurant {
 
 	}
 
-	public void invalidCharacter() {
-
+	public boolean invalidNumericCharacter(String text) {
+		int number;
+		try {
+			number = Integer.parseInt(text);
+			if (number > 9 || number <= 0)
+				return false;
+		} catch (Exception ex) {
+			return false;
+		}
+		return true;
 	}
-
 }
