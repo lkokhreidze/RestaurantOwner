@@ -4,25 +4,30 @@
 
 package game;
 
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Random;
-
+import java.util.List;
 import lombok.Data;
+import java.util.Random;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.text.MessageFormat;
 
+/**
+ * @(#) Restaurant.java
+ */
 @Data
 public class Restaurant {
 	private short weekDay = 0;
-	private short weekCount = 0;
+	
+	private short weekCount = 1;
+	
 	private boolean trainingResult;
 
-	private java.util.List<Client> clients;
+	private List<Client> clients;
 
 	private int budgetAmount = 10000;
 
 	private int reputation = 15;
-	
+
 	private String ownerName;
 
 	private String name;
@@ -39,17 +44,11 @@ public class Restaurant {
 
 	private Chef chef;
 
-	private java.util.List<Table> tables;
+	private List<Table> tables;
 
-	private String[] employeeNames = { "Sauron", "Voldemort", "Chuck Norris",
-			"Silvester Stalone", "John Snow (Who knows nothing)" };
+	private String[] employeeNames = {"Sauron","Voldemort","Chuck Norris","Silvester Stalone","John Snow (Who knows nothing)"};
 
-	private String[] clientNames = { "Olivia Morris", "Leslie Richardson",
-			"Lindsay Guzman", "Teresa Manning", "Lois Becker",
-			"Ethel Fitzgerald", "Lonnie Warren", "Hattie Massey",
-			"Ken Mcdaniel", "Jessie Bryant", "Israel Brock", "Mary Thompson",
-			"Duane Jefferson", "Alexis Abbott", "Emily Graham", "Julia Marsh",
-			"Amanda Stokes", "Jody Simon" };
+	private String[] clientNames = {"Olivia Morris","Leslie Richardson","Lindsay Guzman","Teresa Manning","Lois Becker","Ethel Fitzgerald","Lonnie Warren","Hattie Massey","Ken Mcdaniel","Jessie Bryant","Israel Brock","Mary Thompson","Duane Jefferson","Alexis Abbott","Emily Graham","Julia Marsh","Amanda Stokes","Jody Simon"};
 
 	private int priceForLowDish;
 
@@ -61,7 +60,10 @@ public class Restaurant {
 
 	private String path;
 
-	public Restaurant(String name, String p) throws IOException {
+	
+	private Waiter waiter;
+	
+	public Restaurant( String name, String p ) throws IOException {
 		this.ownerName = name;
 		clients = new ArrayList<Client>();
 		waiters = new ArrayList<Waiter>();
@@ -73,13 +75,13 @@ public class Restaurant {
 		this.startGame();
 	}
 
-	public void isSufficientBudget() throws IOException {
+	public void isSufficientBudget( ) throws IOException {
 		if (budgetAmount <= 0) {
 			this.gameOver();
 		}
 	}
 
-	private void chooseClientsAndMakeOrder(int tableNumber) {
+	private void chooseClientsAndMakeOrder( int tableNumber ) {
 		Random rnd = new Random();
 		Client clientOne;
 		Client clientTwo;
@@ -118,7 +120,7 @@ public class Restaurant {
 		}
 	}
 
-	public void occupyTables() throws IOException {
+	public void occupyTables( ) throws IOException {
 		if (this.reputation >= 30)
 			for (int i = 0; i < 9; i++)
 				chooseClientsAndMakeOrder(i);
@@ -131,7 +133,7 @@ public class Restaurant {
 		endOfTheDay();
 	}
 
-	private void startGame() throws IOException {
+	private void startGame( ) throws IOException {
 		for (int i = 0; i < 18; i++) {
 			clients.add(new Client(clientNames[i]));
 		}
@@ -158,7 +160,7 @@ public class Restaurant {
 
 	}
 
-	private void assignTable() throws IOException {
+	private void assignTable( ) throws IOException {
 		for (Waiter waiter : waiters) {
 			System.out.println("Assign table to waiter " + waiter.name);
 			for (int i = 0; i < 3; i++) {
@@ -185,7 +187,7 @@ public class Restaurant {
 		this.occupyTables();
 	}
 
-	public void setDishBeveraQuality() throws IOException {
+	public void setDishBeveraQuality( ) throws IOException {
 		System.out
 				.print("Would you like to set Dish and Baverage Quality?[Y/N]: ");
 		boolean set = ConsoleReader.readLine().toUpperCase().equals("Y");
@@ -218,7 +220,7 @@ public class Restaurant {
 		}
 	}
 
-	public void trainEmployee() throws IOException {
+	public void trainEmployee( ) throws IOException {
 		System.out.print("Which Employee to train? [W|C|B|N]: ");
 		String employee = ConsoleReader.readLine();
 		switch (employee.toUpperCase()) {
@@ -274,12 +276,11 @@ public class Restaurant {
 		trainEmployee();
 	}
 
-	public void endOfTheDay() throws IOException {
+	public void endOfTheDay( ) throws IOException {
 		this.weekDay += 1;
 		if (this.weekDay == 7) {
 			for (Table table : tables)
 				table.setTableAssigned(false);
-			this.weekDay = 0;
 			endOfTheWeek();
 		} else {
 			for (Table table : tables) {
@@ -295,7 +296,7 @@ public class Restaurant {
 	}
 
 
-	public void paySalary() throws IOException {
+	public void paySalary( ) throws IOException {
 		int waiterSalaries = 0;
 		for (Waiter waiter : waiters) {
 			waiterSalaries += waiter.getSalary();
@@ -305,7 +306,7 @@ public class Restaurant {
 		isSufficientBudget();
 	}
 
-	public void paySuppliers() throws IOException {
+	public void paySuppliers( ) throws IOException {
 		int lowQualityDishCounter = 0;
 		int highQualityDishCounter = 0;
 		for (Dish dish : menu.getDishes()) {
@@ -335,7 +336,7 @@ public class Restaurant {
 		isSufficientBudget();
 	}
 
-	public void gameOver() throws IOException {
+	public void gameOver( ) throws IOException {
 		payAdditionalCosts();
 		provideGameInfo();
 		System.out.println("!!!===============GAME IS OVER===============!!!");
@@ -345,12 +346,12 @@ public class Restaurant {
 		new PlayerStatistics(ownerName, path, budgetAmount).createStatistics();
 	}
 
-	public void payAdditionalCosts() {
+	public void payAdditionalCosts( ) {
 		budgetAmount= budgetAmount - 4000;
 	}
 
-	public void endOfTheWeek() throws IOException {
-		if (weekCount == 3) {
+	public void endOfTheWeek( ) throws IOException {
+		if (weekCount == 4) {
 			this.gameOver();
 		} else {
 			this.trainEmployee();
@@ -363,12 +364,12 @@ public class Restaurant {
 	}
 
 
-	public void provideGameInfo() {
+	public void provideGameInfo( ) {
 		System.out.println(MessageFormat.format(
-				"==================\n\rTotal budget for day {0} is {1}\n\r==================", this.weekDay,
+				"==================\n\rTotal budget for day {0} - week {1} is {2}\n\r==================", this.weekDay,this.weekCount,
 				this.budgetAmount));
 		System.out.println(MessageFormat.format(
-				"Restaurant reputation for day {0} is {1}\n\r==================", this.weekDay,
+				"Restaurant reputation for day {0} - week {1} is {2}\n\r==================", this.weekDay,this.weekCount,
 				this.reputation));
 		for (Client client : clients) {
 			if (client.totalSpending() != 0) {
@@ -409,7 +410,7 @@ public class Restaurant {
 
 	}
 
-	public boolean invalidNumericCharacter(String text) {
+	public boolean invalidNumericCharacter( String text ) {
 		int number;
 		try {
 			number = Integer.parseInt(text);

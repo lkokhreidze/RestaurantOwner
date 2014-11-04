@@ -4,10 +4,12 @@
 
 package game;
 
+import lombok.Data;
 import java.util.Random;
 
-import lombok.Data;
-
+/**
+ * @(#) Order.java
+ */
 @Data
 public class Order {
 
@@ -17,12 +19,12 @@ public class Order {
 
 	private Beverage beverage;
 
-	public Order(Dish dish, Beverage beverage) {
+	public Order( Dish dish, Beverage beverage ) {
 		this.dish = dish;
 		this.beverage = beverage;
 	}
 
-	public int calculateSatisfactory(Waiter waiter) {
+	public int calculateSatisfactory( Waiter waiter ) {
 		this.waiter = waiter;
 		int clientSatisfaction = 0;
 		Random rnd = new Random();
@@ -105,7 +107,7 @@ public class Order {
 		return clientSatisfaction;
 	}
 
-	public int calculateIncome() {
+	public int calculateIncome( ) {
 		return this.dish.getPrice() + this.beverage.getPrice();
 	}
 

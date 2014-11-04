@@ -6,6 +6,9 @@ package game;
 
 import lombok.Data;
 
+/**
+ * @(#) Dish.java
+ */
 @Data
 public class Dish extends MenuItem {
 	private static int calories = 250;
@@ -13,20 +16,20 @@ public class Dish extends MenuItem {
 	private static int highQualityDishCost = 10;
 	private static int lowQualityDishCost = 3;
 	
-	public Dish(String name, Chef chef){
+	public Dish( String name, Chef chef ){
 		this.name = name;
 		this.chef = chef;
 	}
 
-	public static int gethighQualityDishCost() {
+	public static int gethighQualityDishCost( ) {
 		return highQualityDishCost;
 	}
 	
-	public static int getlowQualityDishCost() {
+	public static int getlowQualityDishCost( ) {
 		return lowQualityDishCost;
 	}
 
-	public static int getCalories() {
+	public static int getCalories( ) {
 		return calories;
 	}
 

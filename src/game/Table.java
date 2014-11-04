@@ -6,6 +6,9 @@ package game;
 
 import lombok.Data;
 
+/**
+ * @(#) Table.java
+ */
 @Data
 public class Table
 {
@@ -19,7 +22,7 @@ public class Table
 
     private int income;
 	
-	public Table(int number){
+	public Table( int number ){
 		this.number = number;
 	}
 	

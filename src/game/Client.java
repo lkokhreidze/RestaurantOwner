@@ -4,11 +4,13 @@
 
 package game;
 
-import lombok.Data;
-
-import java.util.ArrayList;
 import java.util.List;
+import lombok.Data;
+import java.util.ArrayList;
 
+/**
+ * @(#) Client.java
+ */
 @Data
 public class Client extends Person {
 
@@ -18,27 +20,27 @@ public class Client extends Person {
 
 	private int taxCode;
 
-	java.util.List<Order> orders;
+	List<Order> orders;
 	
-	int[] beverageCount = { 0, 0, 0, 0, 0 };
+	int[] beverageCount = {0,0,0,0,0};
 	
-	int[] dishCount = { 0, 0, 0, 0, 0 };
+	int[] dishCount = {0,0,0,0,0};
 
-	public Client(String name) {
+	public Client( String name ) {
 		this.name = name;
 		orders = new ArrayList<Order>();
 		bill = 0;
 	}
 
-	public int getAverageCaloriesConsumed() {
+	public int getAverageCaloriesConsumed( ) {
 		return Dish.getCalories() * orders.size() / orders.size();
 	}
 
-	public int getAverageVolumeConsumed() {
+	public int getAverageVolumeConsumed( ) {
 		return Beverage.getVolume() * orders.size() / orders.size();
 	}
 
-	public int[] getOrderedDishes() {
+	public int[] getOrderedDishes( ) {
 
 		for (Order order : orders) {
 			switch (order.getDish().getName()) {
@@ -62,7 +64,7 @@ public class Client extends Person {
 		return dishCount;
 	}
 
-	public int[] getOrderedBeverages() {
+	public int[] getOrderedBeverages( ) {
 
 		for (Order order : orders) {
 			switch (order.getBeverage().getName()) {
@@ -86,7 +88,7 @@ public class Client extends Person {
 		return beverageCount;
 	}
 
-	public int totalSpending() {
+	public int totalSpending( ) {
 		int totalSpending = 0;
 		for (Order order : orders) {
 			totalSpending += order.calculateIncome();

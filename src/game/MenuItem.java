@@ -6,6 +6,9 @@ package game;
 
 import lombok.Data;
 
+/**
+ * @(#) MenuItem.java
+ */
 @Data
 public abstract class MenuItem {
 	

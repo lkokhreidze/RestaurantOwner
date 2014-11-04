@@ -6,6 +6,9 @@ package game;
 
 import lombok.Data;
 
+/**
+ * @(#) Beverage.java
+ */
 @Data
 public class Beverage extends MenuItem {
 	private static int highQualityBeverageCost = 3;
@@ -13,20 +16,20 @@ public class Beverage extends MenuItem {
 	private static int volume = 100;	
 	private Barman barman;
 	
-	public Beverage(String name, Barman barman){
+	public Beverage( String name, Barman barman ){
 		this.name = name;
 		this.barman = barman;
 	}
 
-	public static int getHighQualityBeverageCost() {
+	public static int getHighQualityBeverageCost( ) {
 		return highQualityBeverageCost;
 	}
 
-	public static int getlowQualityBeverageCost() {
+	public static int getlowQualityBeverageCost( ) {
 		return lowQualityBeverageCost;
 	}
 
-	public static int getVolume() {
+	public static int getVolume( ) {
 		return volume;
 	}
 

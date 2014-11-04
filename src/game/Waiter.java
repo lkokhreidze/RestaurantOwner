@@ -4,28 +4,27 @@
 
 package game;
 
+import java.util.Collection;
+import lombok.Data;
 import java.util.ArrayList;
 
-import lombok.Data;
-
+/**
+ * @(#) Waiter.java
+ */
 @Data
 public class Waiter extends Employee {
 	
-	private java.util.Collection<Table> tables;
+	private Collection<Table> tables;
 
-	private Player player;
-
-	private java.util.Collection<Order> order;
 	
-	public Waiter (String name){
+	public Waiter( String name ){
 		this.name = name;
 		tables = new ArrayList<Table>();
-		order = new ArrayList<Order>(); 
 		this.salary = 200;
 	}
 
 
-	public boolean trainEmployee(int budget) {
+	public boolean trainEmployee( int budget ) {
 		if (this.expLevel != ExpLevel.HIGH && budget - this.trainW >= 0) {
 			switch (this.expLevel) {
 			case LOW:

@@ -4,13 +4,15 @@
 
 package game;
 
-import java.io.BufferedReader;
+import lombok.Data;
 import java.io.IOException;
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.text.MessageFormat;
 
-import lombok.Data;
-
+/**
+ * @(#) Player.java
+ */
 @Data
 public class Player {
 	private Restaurant restaurant;
@@ -18,7 +20,7 @@ public class Player {
 	
 	private String path;
 	
-	public void enterName() throws IOException  {
+	public void enterName( ) throws IOException  {
         System.out.print("Enter Name: ");
         name = ConsoleReader.readLine();
         System.out.println(MessageFormat.format("Hello {0} you became a new restaurant owner", name));

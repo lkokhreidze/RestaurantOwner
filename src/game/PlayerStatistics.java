@@ -5,37 +5,38 @@
 
 package game;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.FileWriter;
+import lombok.Data;
+import java.util.Scanner;
+import java.io.IOException;
+import java.util.Comparator;
+import java.util.Collections;
+import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Scanner;
 
-import lombok.Data;
-
+/**
+ * @(#) PlayerStatistics.java
+ */
 @Data
 public class PlayerStatistics
 {
 	private int numberOfPlayers;
 	private int playerRanks;
-	private Player player;
 	String playerName;
 	Integer budget;
 	String filePath;
 	
 	File statFile;
 	
-	public PlayerStatistics(String name, String path, Integer b){
+	public PlayerStatistics( String name, String path, Integer b ){
 		this.playerName = name;
 		this.filePath = path;
 		this.budget = b;
 	}
 	
-	public void createStatistics() throws IOException {
+	public void createStatistics( ) throws IOException {
 		this.statFile = new File(filePath);
 		ArrayList<PlayerRanking> playersList = new ArrayList<PlayerRanking>();
 		try {
@@ -59,7 +60,7 @@ public class PlayerStatistics
 		}
 	}
 	
-	public ArrayList<PlayerRanking> getRankingList() throws IOException {
+	public ArrayList<PlayerRanking> getRankingList( ) throws IOException {
 		Scanner read = new Scanner (statFile);
 		ArrayList<PlayerRanking> playerRanking = new ArrayList<PlayerRanking>();
 		read.useDelimiter("\\s*,\\s*");
@@ -75,7 +76,7 @@ public class PlayerStatistics
 	
 	public class RankComparator implements Comparator<PlayerRanking> {
 		@Override
-		public int compare(PlayerRanking o1, PlayerRanking o2) {
+		public int compare( PlayerRanking o1, PlayerRanking o2 ) {
 			return o2.getBudget().compareTo(o1.getBudget());
 		}
 	}

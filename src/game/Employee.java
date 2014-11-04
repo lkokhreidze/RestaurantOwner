@@ -6,6 +6,9 @@ package game;
 
 import lombok.Data;
 
+/**
+ * @(#) Employee.java
+ */
 @Data
 public abstract class Employee extends Person {
 	protected static int trainCB = 1200;	//barman and chef training cost
@@ -14,9 +17,8 @@ public abstract class Employee extends Person {
 
 	protected ExpLevel expLevel = ExpLevel.LOW;
 
-	protected Player player;
 
-	public boolean trainEmployee(int budget) {
+	public boolean trainEmployee( int budget ) {
 		if (this.expLevel != ExpLevel.HIGH && budget - this.trainCB >= 0) {
 			switch (this.expLevel) {
 			case LOW:
